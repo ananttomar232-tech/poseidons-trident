@@ -3,9 +3,13 @@ package com.poseidon.trident.client;
 import com.poseidon.trident.Action;
 import com.poseidon.trident.ActionPacket;
 import com.poseidon.trident.Network;
+import com.poseidon.trident.Power;
 import com.poseidon.trident.PoseidonsTridentMod;
 import com.poseidon.trident.PowerManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -59,6 +63,17 @@ public final class ClientAbilityEvents {
         ClientState.selected = index;
         ClientState.switchedAtMillis = System.currentTimeMillis();
         send(Action.values()[Action.SELECT_THUNDER_DOMAIN.ordinal() + index]);
+        showTitle(index);
+    }
+
+    private static void showTitle(int index) {
+        Minecraft mc = Minecraft.getInstance();
+        Component name = Power.values()[index].displayName().copy()
+                .withStyle(Style.EMPTY.withColor(ClientState.COLORS[index]).withBold(true));
+        Component hint = Component.literal("V / B = switch    N = use").withStyle(ChatFormatting.GRAY);
+        mc.gui.setTimes(2, 30, 10);
+        mc.gui.setSubtitle(hint);
+        mc.gui.setTitle(name);
     }
 
     private static void send(Action action) {
